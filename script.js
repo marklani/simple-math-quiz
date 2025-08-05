@@ -2,12 +2,40 @@ const questionElement = document.getElementById("question");
 const answerButtonsElement = document.getElementById("answer-buttons");
 const feedbackElement = document.getElementById("feedback");
 const nextButton = document.getElementById("next-btn");
+const correctSound = document.getElementById("correct-sound");
+const wrongSound = document.getElementById("wrong-sound");
+
+const levelSelection = document.getElementById("level-selection");
+const levelButtons = document.querySelectorAll('.level-btn');
 
 let correctAnswer = 0;
+let maxNumber = 10; // Default to 1-digit numbers
+
+// Event listeners for level selection buttons
+levelButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        // Remove the active class from all buttons
+        levelButtons.forEach(btn => btn.classList.remove('active-level'));
+
+        // Add the active class to the clicked button
+        button.classList.add('active-level');
+
+        const digits = parseInt(button.getAttribute('data-digits'));
+        if (digits === 1) {
+            maxNumber = 10;
+        } else if (digits === 2) {
+            maxNumber = 100;
+        } else if (digits === 3) {
+            maxNumber = 1000;
+        }
+
+        generateQuestion();
+    });
+});
 
 // Function to generate a random integer
 function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+    return Math.floor(Math.random() * (max - min)) + min;
 }
 
 // Function to generate a new quiz question
@@ -20,8 +48,9 @@ function generateQuestion() {
         button.style.backgroundColor = '#007bff';
     });
 
-    const num1 = getRandomInt(1, 20);
-    const num2 = getRandomInt(1, 20);
+    // Use the maxNumber variable to set the range of numbers
+    const num1 = getRandomInt(1, maxNumber);
+    const num2 = getRandomInt(1, maxNumber);
     const operation = Math.random() < 0.5 ? "+" : "-";
 
     questionElement.textContent = `${num1} ${operation} ${num2} = ?`;
@@ -60,11 +89,13 @@ function checkAnswer(selectedAnswer, selectedButton) {
         feedbackElement.classList.remove("incorrect");
         feedbackElement.classList.add("correct");
         selectedButton.style.backgroundColor = 'green';
+        correctSound.play();
     } else {
         feedbackElement.textContent = "Incorrect. Try again!";
         feedbackElement.classList.remove("correct");
         feedbackElement.classList.add("incorrect");
         selectedButton.style.backgroundColor = 'red';
+        wrongSound.play();
 
         // Highlight the correct answer
         Array.from(answerButtonsElement.children).forEach(button => {
@@ -86,5 +117,8 @@ function checkAnswer(selectedAnswer, selectedButton) {
 // Event listener for the "Next Question" button
 nextButton.addEventListener("click", generateQuestion);
 
-// Start the quiz when the page loads
+// Start the quiz with a default level when the page loads
 generateQuestion();
+
+// Highlight the default 1-digit button on initial load
+document.querySelector('.level-btn[data-digits="1"]').classList.add('active-level');
