@@ -5,10 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Math Quiz</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <div class="container">
         <h1>Simple Math Quiz</h1>
+        <div id="level-selection">
+            <h3>Choose a Difficulty Level:</h3>
+            <button class="level-btn" data-digits="1">1-Digit</button>
+            <button class="level-btn" data-digits="2">2-Digits</button>
+            <button class="level-btn" data-digits="3">3-Digits</button>
+        </div>
         <div class="quiz-box">
             <h2 id="question"></h2>
             <div id="answer-buttons">
@@ -18,9 +25,13 @@
                 <button class="btn"></button>
             </div>
             <p id="feedback"></p>
-            <button id="next-btn" class="hidden">Next Question</button>
+            <button id="next-btn" class="hidden"><i class="fas fa-forward"></i> Next Question</button>
         </div>
     </div>
+
+    <audio id="correct-sound" src="assets/correct.wav"></audio>
+    <audio id="wrong-sound" src="assets/wrong.wav"></audio>
+
     <script src="script.js"></script>
 </body>
 </html>
