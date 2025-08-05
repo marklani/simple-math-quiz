@@ -4,16 +4,29 @@ const feedbackElement = document.getElementById("feedback");
 const nextButton = document.getElementById("next-btn");
 const correctSound = document.getElementById("correct-sound");
 const wrongSound = document.getElementById("wrong-sound");
+const scoreCounter = document.getElementById("score-counter");
 
 const levelSelection = document.getElementById("level-selection");
 const levelButtons = document.querySelectorAll('.level-btn');
 
 let correctAnswer = 0;
 let maxNumber = 10; // Default to 1-digit numbers
+let correctCount = 0;
+let totalQuestions = 0;
+
+// Function to update the score display
+function updateScore() {
+    scoreCounter.textContent = `Score: ${correctCount}/${totalQuestions}`;
+}
 
 // Event listeners for level selection buttons
 levelButtons.forEach(button => {
     button.addEventListener('click', () => {
+        // Reset score when a new level is selected
+        correctCount = 0;
+        totalQuestions = 0;
+        updateScore();
+
         // Remove the active class from all buttons
         levelButtons.forEach(btn => btn.classList.remove('active-level'));
 
@@ -49,9 +62,16 @@ function generateQuestion() {
     });
 
     // Use the maxNumber variable to set the range of numbers
-    const num1 = getRandomInt(1, maxNumber);
-    const num2 = getRandomInt(1, maxNumber);
+    let num1 = getRandomInt(1, maxNumber);
+    let num2 = getRandomInt(1, maxNumber);
     const operation = Math.random() < 0.5 ? "+" : "-";
+
+    // Logic to prevent negative answers
+    if (operation === "-") {
+        if (num2 > num1) {
+            [num1, num2] = [num2, num1]; // Swap the numbers
+        }
+    }
 
     questionElement.textContent = `${num1} ${operation} ${num2} = ?`;
 
@@ -84,7 +104,10 @@ function generateQuestion() {
 
 // Function to check the user's answer
 function checkAnswer(selectedAnswer, selectedButton) {
+    totalQuestions++; // Increment total questions for every answer
+
     if (selectedAnswer === correctAnswer) {
+        correctCount++; // Increment correct answers
         feedbackElement.textContent = "Correct!";
         feedbackElement.classList.remove("incorrect");
         feedbackElement.classList.add("correct");
@@ -105,6 +128,9 @@ function checkAnswer(selectedAnswer, selectedButton) {
         });
     }
 
+    // Update the score display after each answer
+    updateScore();
+
     // Disable all buttons after an answer is selected
     Array.from(answerButtonsElement.children).forEach(button => {
         button.disabled = true;
@@ -117,8 +143,9 @@ function checkAnswer(selectedAnswer, selectedButton) {
 // Event listener for the "Next Question" button
 nextButton.addEventListener("click", generateQuestion);
 
-// Start the quiz with a default level when the page loads
+// Start the quiz with a default level and score when the page loads
 generateQuestion();
+updateScore();
 
 // Highlight the default 1-digit button on initial load
 document.querySelector('.level-btn[data-digits="1"]').classList.add('active-level');
