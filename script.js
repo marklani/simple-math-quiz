@@ -106,7 +106,7 @@ function generateQuestion() {
 function checkAnswer(selectedAnswer, selectedButton) {
     totalQuestions++; // Increment total questions for every answer
 
-    if (selectedAnswer === correctAnswer) {
+    if (parseInt(selectedAnswer) === correctAnswer) {
         correctCount++; // Increment correct answers
         feedbackElement.textContent = "Correct!";
         feedbackElement.classList.remove("incorrect");
